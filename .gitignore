@@ -1,0 +1,32 @@
+# Secrets
+.env
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Large / generated data
+data/raw/*
+!data/raw/.gitkeep
+data/cleaned/*
+!data/cleaned/.gitkeep
+data/chroma_db/
+data/chunks.jsonl
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
