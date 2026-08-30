@@ -34,6 +34,8 @@ class GenerationConfig:
     model_name: str
     temperature: float
     max_tokens: int
+    # True: list every retrieved passage (debug). False: cited [n] only (demo).
+    show_all_sources: bool = True
 
 
 @dataclass

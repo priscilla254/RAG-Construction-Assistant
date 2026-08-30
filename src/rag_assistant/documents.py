@@ -14,11 +14,28 @@ from rag_assistant.hsg150 import HSG150_KNOWN_HEADINGS
 
 # The Approved Documents run to 1,541 pages with no usable contents page,
 # so they have no known-title list and fall back to the shape heuristic.
+MAD_SOURCE_DOC = "The_Merged_Approved_Documents_Oct24.pdf"
+
 KNOWN_HEADINGS_BY_SOURCE: dict[str, frozenset[str]] = {
     "hsg141.pdf": HSG141_KNOWN_HEADINGS,
     "hsg150.pdf": HSG150_KNOWN_HEADINGS,
-    "The_Merged_Approved_Documents_Oct24.pdf": frozenset(),
+    MAD_SOURCE_DOC: frozenset(),
 }
+
+
+def is_merged_approved_document(chunk: dict) -> bool:
+    """True for the merged Approved Documents PDF.
+
+    Its page numbers are the bound volume, not the original Parts, so
+    citations should use clause/section instead of p.N.
+    """
+    source = chunk.get("source_doc") or ""
+    if source == MAD_SOURCE_DOC:
+        return True
+    if chunk.get("doc_type") == "regulatory":
+        return True
+    title = chunk.get("title") or ""
+    return "Merged Approved Documents" in title
 
 
 def known_headings_for(source_doc: str) -> frozenset[str]:

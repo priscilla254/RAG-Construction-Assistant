@@ -105,6 +105,8 @@ retrieval:
   k: 5
   vector_weight: 0.7
   keyword_weight: 0.3
+generation:
+  show_all_sources: true   # debug: every retrieved passage. Streamlit defaults to cited-only.
 ```
 
 Changing `embedding.model_name` means rebuilding `data/chroma_db`.

@@ -17,8 +17,21 @@ st.title("RAG Construction Assistant")
 st.caption("Ask questions over UK building regulations and HSE construction guidance.")
 
 config = Config.from_yaml(ROOT / "config.yaml")
+show_all_sources = st.sidebar.checkbox(
+    "Show all retrieved sources",
+    value=False,
+    help=(
+        "Off (demo): only passages cited as [n]. "
+        "On (debug): every retrieved passage, including unused ones."
+    ),
+)
 question = st.text_input("Question")
 
 if st.button("Ask") and question:
     st.info("Pipeline not implemented yet.")
     st.write(f"Would retrieve top {config.retrieval.k} chunks, then call {config.generation.model_name}.")
+    st.caption(
+        "Sources: all retrieved passages"
+        if show_all_sources
+        else "Sources: cited passages only"
+    )
