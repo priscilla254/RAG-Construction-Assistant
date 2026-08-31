@@ -26,6 +26,10 @@ class RetrievalConfig:
     k: int = 5
     vector_weight: float = 0.7
     keyword_weight: float = 0.3
+    # After global hybrid, at most this many chunks from one PDF before
+    # later ranks from other PDFs are considered. 0 disables the cap.
+    # If other PDFs cannot fill k, overflow from the dominant PDF is used.
+    max_per_source: int = 3
 
 
 @dataclass

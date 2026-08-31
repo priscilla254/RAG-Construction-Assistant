@@ -82,6 +82,7 @@ def test_dataclass_defaults_hold_k_model_and_chunk_size():
     assert EmbeddingConfig().model_name == "BAAI/bge-small-en-v1.5"
     assert EmbeddingConfig().batch_size == 64
     assert RetrievalConfig().k == 5
+    assert RetrievalConfig().max_per_source == 3
     assert GenerationConfig().model_name == "openai/gpt-oss-20b"
 
 
@@ -106,6 +107,7 @@ generation: {}
     assert config.chunking.chunk_size == 400
     assert config.embedding.model_name == "BAAI/bge-small-en-v1.5"
     assert config.retrieval.k == 5
+    assert config.retrieval.max_per_source == 3
     assert config.generation.model_name == "openai/gpt-oss-20b"
 
 

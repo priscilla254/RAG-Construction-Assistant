@@ -8,6 +8,12 @@ lists are merged with weighted reciprocal rank fusion:
 
 A document that appears in only one list still scores from that list.
 The constant 60 is the usual RRF damping term; ranks are 1-based.
+
+After fusion, max_per_source (default 3) caps how many chunks any one
+PDF may contribute to the top-k, so a later hit from a second PDF can
+replace a 4th chunk from a monopolising source. If other PDFs cannot
+fill k, the skipped overflow is used so a single relevant PDF still
+returns k chunks.
 """
 
 from __future__ import annotations
@@ -51,6 +57,7 @@ class HybridRetriever:
         k: int,
         vector_weight: float,
         keyword_weight: float,
+        max_per_source: int = 3,
     ) -> None:
         self.vector_store = vector_store
         self.keyword_search = keyword_search
@@ -58,6 +65,7 @@ class HybridRetriever:
         self.k = k
         self.vector_weight = vector_weight
         self.keyword_weight = keyword_weight
+        self.max_per_source = max_per_source
 
     @classmethod
     def from_config(
@@ -74,6 +82,7 @@ class HybridRetriever:
             k=config.retrieval.k,
             vector_weight=config.retrieval.vector_weight,
             keyword_weight=config.retrieval.keyword_weight,
+            max_per_source=config.retrieval.max_per_source,
         )
 
     def retrieve(self, query: str, k: int | None = None) -> list[dict]:
@@ -101,11 +110,42 @@ class HybridRetriever:
         by_id: dict[str, dict] = {hit["chunk_id"]: hit for hit in keyword_hits}
         by_id.update({hit["chunk_id"]: hit for hit in vector_hits})
 
-        results: list[dict] = []
+        ranked: list[dict] = []
         for chunk_id, rrf_score in fused:
-            hit = dict(by_id[chunk_id])
-            hit["rrf_score"] = rrf_score
-            results.append(hit)
-            if len(results) >= top_k:
-                break
-        return results
+            hit = by_id.get(chunk_id)
+            if hit is None:
+                continue
+            row = dict(hit)
+            row["rrf_score"] = rrf_score
+            ranked.append(row)
+        return _cap_per_source(ranked, top_k, self.max_per_source)
+
+
+def _cap_per_source(
+    ranked: list[dict],
+    top_k: int,
+    max_per_source: int,
+) -> list[dict]:
+    """Take top_k from a global ranking, skipping a PDF once it hits the cap."""
+    if top_k < 1:
+        return []
+    if max_per_source < 1:
+        return ranked[:top_k]
+
+    chosen: list[dict] = []
+    overflow: list[dict] = []
+    counts: dict[str, int] = {}
+    for hit in ranked:
+        source = hit.get("source_doc") or ""
+        if source and counts.get(source, 0) >= max_per_source:
+            overflow.append(hit)
+            continue
+        chosen.append(hit)
+        if source:
+            counts[source] = counts.get(source, 0) + 1
+        if len(chosen) >= top_k:
+            return chosen
+
+    if len(chosen) < top_k:
+        chosen.extend(overflow[: top_k - len(chosen)])
+    return chosen

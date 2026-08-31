@@ -18,6 +18,7 @@ retrieval:
   k: 5
   vector_weight: 0.7
   keyword_weight: 0.3
+  max_per_source: 3
 
 generation:
   provider: groq

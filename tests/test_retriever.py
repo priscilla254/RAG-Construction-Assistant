@@ -55,6 +55,7 @@ def test_hybrid_retriever_from_config_reads_k_and_weights():
     assert retriever.k == 3
     assert retriever.vector_weight == 0.9
     assert retriever.keyword_weight == 0.1
+    assert retriever.max_per_source == 3
 
 
 def test_reciprocal_rank_fusion_promotes_items_on_both_lists():
@@ -120,3 +121,87 @@ def test_retrieve_empty_query_returns_nothing():
         keyword_weight=0.3,
     )
     assert retriever.retrieve("   ") == []
+
+
+def _hits(*rows: tuple[str, str]) -> list[dict]:
+    return [{"chunk_id": chunk_id, "text": chunk_id, "source_doc": source} for chunk_id, source in rows]
+
+
+def test_max_per_source_lets_a_later_pdf_into_top_k():
+    vector_hits = _hits(
+        ("s150_a", "hsg150.pdf"),
+        ("s150_b", "hsg150.pdf"),
+        ("s150_c", "hsg150.pdf"),
+        ("s150_d", "hsg150.pdf"),
+        ("s150_e", "hsg150.pdf"),
+        ("s141_a", "hsg141.pdf"),
+        ("mad_a", "The_Merged_Approved_Documents_Oct24.pdf"),
+    )
+    retriever = HybridRetriever(
+        vector_store=_FakeStore(vector_hits),  # type: ignore[arg-type]
+        keyword_search=_FakeKeywords(vector_hits),  # type: ignore[arg-type]
+        embedder=_FakeEmbedder(),  # type: ignore[arg-type]
+        k=5,
+        vector_weight=0.7,
+        keyword_weight=0.3,
+        max_per_source=3,
+    )
+    hits = retriever.retrieve("guard rails")
+    ids = [hit["chunk_id"] for hit in hits]
+    assert ids == ["s150_a", "s150_b", "s150_c", "s141_a", "mad_a"]
+    assert ids.count("s150_d") == 0
+
+
+def test_max_per_source_backfills_when_only_one_pdf_has_hits():
+    vector_hits = _hits(
+        ("s150_a", "hsg150.pdf"),
+        ("s150_b", "hsg150.pdf"),
+        ("s150_c", "hsg150.pdf"),
+        ("s150_d", "hsg150.pdf"),
+        ("s150_e", "hsg150.pdf"),
+    )
+    retriever = HybridRetriever(
+        vector_store=_FakeStore(vector_hits),  # type: ignore[arg-type]
+        keyword_search=_FakeKeywords(vector_hits),  # type: ignore[arg-type]
+        embedder=_FakeEmbedder(),  # type: ignore[arg-type]
+        k=5,
+        vector_weight=0.7,
+        keyword_weight=0.3,
+        max_per_source=3,
+    )
+    hits = retriever.retrieve("guard rails")
+    assert [hit["chunk_id"] for hit in hits] == [
+        "s150_a",
+        "s150_b",
+        "s150_c",
+        "s150_d",
+        "s150_e",
+    ]
+
+
+def test_max_per_source_zero_keeps_the_global_ranking():
+    vector_hits = _hits(
+        ("s150_a", "hsg150.pdf"),
+        ("s150_b", "hsg150.pdf"),
+        ("s150_c", "hsg150.pdf"),
+        ("s150_d", "hsg150.pdf"),
+        ("s150_e", "hsg150.pdf"),
+        ("s141_a", "hsg141.pdf"),
+    )
+    retriever = HybridRetriever(
+        vector_store=_FakeStore(vector_hits),  # type: ignore[arg-type]
+        keyword_search=_FakeKeywords(vector_hits),  # type: ignore[arg-type]
+        embedder=_FakeEmbedder(),  # type: ignore[arg-type]
+        k=5,
+        vector_weight=0.7,
+        keyword_weight=0.3,
+        max_per_source=0,
+    )
+    hits = retriever.retrieve("guard rails")
+    assert [hit["chunk_id"] for hit in hits] == [
+        "s150_a",
+        "s150_b",
+        "s150_c",
+        "s150_d",
+        "s150_e",
+    ]
