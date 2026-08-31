@@ -25,6 +25,7 @@ from pathlib import Path
 import pdfplumber
 
 from rag_assistant.config import Config
+from rag_assistant.publisher_matter import looks_like_publisher_matter
 from rag_assistant.watermark import strip_watermark_text
 
 # Minimum fraction of the dominant body font size a character must have
@@ -339,6 +340,12 @@ def ingest_document(pdf_path: Path, record: DocumentRecord, verbose: bool = True
                     f"{len(cleaned)} after cleaning -- "
                     f"check header-stripping didn't over-match this page."
                 )
+
+            if looks_like_publisher_matter(cleaned):
+                print(
+                    f"  dropped page {i}: title/copyright/order page, no guidance"
+                )
+                continue
 
             if cleaned:
                 pages_out.append({"page_number": i, "text": cleaned})

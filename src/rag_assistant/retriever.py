@@ -12,6 +12,7 @@ The constant 60 is the usual RRF damping term; ranks are 1-based.
 
 from __future__ import annotations
 
+from rag_assistant.config import Config
 from rag_assistant.embedder import Embedder
 from rag_assistant.keyword_search import KeywordSearch
 from rag_assistant.vector_store import VectorStore
@@ -57,6 +58,23 @@ class HybridRetriever:
         self.k = k
         self.vector_weight = vector_weight
         self.keyword_weight = keyword_weight
+
+    @classmethod
+    def from_config(
+        cls,
+        config: Config,
+        vector_store: VectorStore,
+        keyword_search: KeywordSearch,
+        embedder: Embedder,
+    ) -> HybridRetriever:
+        return cls(
+            vector_store=vector_store,
+            keyword_search=keyword_search,
+            embedder=embedder,
+            k=config.retrieval.k,
+            vector_weight=config.retrieval.vector_weight,
+            keyword_weight=config.retrieval.keyword_weight,
+        )
 
     def retrieve(self, query: str, k: int | None = None) -> list[dict]:
         top_k = self.k if k is None else k

@@ -192,10 +192,7 @@ def index_corpus(config) -> int:
     from rag_assistant.embedder import Embedder
 
     chunks = load_chunks(config.paths.chunks_path)
-    embedder = Embedder(
-        model_name=config.embedding.model_name,
-        batch_size=config.embedding.batch_size,
-    )
+    embedder = Embedder.from_config(config)
     print(
         f"Embedding {len(chunks)} chunks with {embedder.model_name} "
         f"(dim {embedder.dimension}, batch {embedder.batch_size}, "

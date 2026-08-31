@@ -11,29 +11,29 @@ from dotenv import load_dotenv
 
 @dataclass
 class ChunkingConfig:
-    chunk_size: int
-    chunk_overlap: int
+    chunk_size: int = 400
+    chunk_overlap: int = 60
 
 
 @dataclass
 class EmbeddingConfig:
-    model_name: str
-    batch_size: int
+    model_name: str = "BAAI/bge-small-en-v1.5"
+    batch_size: int = 64
 
 
 @dataclass
 class RetrievalConfig:
-    k: int
-    vector_weight: float
-    keyword_weight: float
+    k: int = 5
+    vector_weight: float = 0.7
+    keyword_weight: float = 0.3
 
 
 @dataclass
 class GenerationConfig:
-    provider: str
-    model_name: str
-    temperature: float
-    max_tokens: int
+    provider: str = "groq"
+    model_name: str = "openai/gpt-oss-20b"
+    temperature: float = 0.1
+    max_tokens: int = 1024
     # True: list every retrieved passage (debug). False: cited [n] only (demo).
     show_all_sources: bool = True
 

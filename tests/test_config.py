@@ -1,4 +1,12 @@
-from rag_assistant.config import Config
+from rag_assistant.chunker import DocumentChunker
+from rag_assistant.config import (
+    ChunkingConfig,
+    Config,
+    EmbeddingConfig,
+    GenerationConfig,
+    RetrievalConfig,
+)
+from rag_assistant.embedder import Embedder
 
 
 def test_embedding_config_loads_model_and_batch_size(tmp_path):
@@ -66,3 +74,70 @@ generation:
     )
     config = Config.from_yaml(config_path)
     assert config.generation.show_all_sources is False
+
+
+def test_dataclass_defaults_hold_k_model_and_chunk_size():
+    assert ChunkingConfig().chunk_size == 400
+    assert ChunkingConfig().chunk_overlap == 60
+    assert EmbeddingConfig().model_name == "BAAI/bge-small-en-v1.5"
+    assert EmbeddingConfig().batch_size == 64
+    assert RetrievalConfig().k == 5
+    assert GenerationConfig().model_name == "openai/gpt-oss-20b"
+
+
+def test_missing_yaml_keys_fall_back_to_dataclass_defaults(tmp_path):
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(
+        """
+paths:
+  raw_dir: data/raw
+  cleaned_dir: data/cleaned
+  chunks_path: data/chunks.jsonl
+  chroma_dir: data/chroma_db
+  manifest_path: manifest.csv
+chunking: {}
+embedding: {}
+retrieval: {}
+generation: {}
+""",
+        encoding="utf-8",
+    )
+    config = Config.from_yaml(config_path)
+    assert config.chunking.chunk_size == 400
+    assert config.embedding.model_name == "BAAI/bge-small-en-v1.5"
+    assert config.retrieval.k == 5
+    assert config.generation.model_name == "openai/gpt-oss-20b"
+
+
+def test_chunker_and_embedder_from_config_use_yaml_values(tmp_path):
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(
+        """
+paths:
+  raw_dir: data/raw
+  cleaned_dir: data/cleaned
+  chunks_path: data/chunks.jsonl
+  chroma_dir: data/chroma_db
+  manifest_path: manifest.csv
+chunking:
+  chunk_size: 120
+  chunk_overlap: 10
+embedding:
+  model_name: unit-test-model
+  batch_size: 8
+retrieval:
+  k: 3
+generation:
+  model_name: unit-test-llm
+""",
+        encoding="utf-8",
+    )
+    config = Config.from_yaml(config_path)
+    chunker = DocumentChunker.from_config(config)
+    embedder = Embedder.from_config(config)
+    assert chunker.chunk_size == 120
+    assert chunker.chunk_overlap == 10
+    assert embedder.model_name == "unit-test-model"
+    assert embedder.batch_size == 8
+    assert config.retrieval.k == 3
+    assert config.generation.model_name == "unit-test-llm"

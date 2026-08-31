@@ -15,13 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from rag_assistant.chunker import load_chunks  # noqa: E402
 from rag_assistant.config import Config  # noqa: E402
-from rag_assistant.embedder import Embedder  # noqa: E402
-from rag_assistant.generator import Generator  # noqa: E402
-from rag_assistant.keyword_search import KeywordSearch  # noqa: E402
-from rag_assistant.retriever import HybridRetriever  # noqa: E402
-from rag_assistant.vector_store import VectorStore  # noqa: E402
+from rag_assistant.pipeline import RetrievalPipeline  # noqa: E402
 
 from spot_check_retrieval import CHECKS  # noqa: E402
 
@@ -54,25 +49,13 @@ def _grounding_flags(answer: str, passages: list[str]) -> list[str]:
 
 def main() -> None:
     config = Config.from_yaml(ROOT / "config.yaml")
-    embedder = Embedder(
-        model_name=config.embedding.model_name,
-        batch_size=config.embedding.batch_size,
-    )
-    store = VectorStore(config.paths.chroma_dir)
-    retriever = HybridRetriever(
-        vector_store=store,
-        keyword_search=KeywordSearch(load_chunks(config.paths.chunks_path)),
-        embedder=embedder,
-        k=config.retrieval.k,
-        vector_weight=config.retrieval.vector_weight,
-        keyword_weight=config.retrieval.keyword_weight,
-    )
-    generator = Generator(config.generation)
+    pipeline = RetrievalPipeline.from_config(config)
 
     grounded = 0
     for index, check in enumerate(CHECKS, start=1):
-        chunks = retriever.retrieve(check["question"], k=5)
-        answer = generator.generate(check["question"], chunks)
+        result = pipeline.answer(check["question"])
+        chunks = result["retrieved_chunks"]
+        answer = result["answer"]
         passages = [chunk.get("text") or "" for chunk in chunks]
         flags = _grounding_flags(answer, passages)
 

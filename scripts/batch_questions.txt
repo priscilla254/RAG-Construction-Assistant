@@ -1,0 +1,19 @@
+# Batch questions covering HSG150, HSG141, and the Merged Approved Documents.
+# Run: python scripts/cli.py --file scripts/batch_questions.txt
+# Add --debug to print retrieved chunks and RRF scores.
+
+# HSG150
+How high should scaffold guard rails or barriers be?
+When must a construction site be notified to HSE?
+What welfare facilities should be provided on a construction site?
+
+# HSG141
+Why use 110 V on a construction site instead of mains voltage?
+How should buried cables be located before excavation?
+What checks are needed on portable electrical equipment on site?
+
+# Approved Documents
+What escape provision do habitable rooms in a dwellinghouse need?
+Must the rise and going of stair steps be consistent throughout a flight?
+Where should smoke alarms be fitted in a dwelling?
+What height should a stair guarding or handrail be?

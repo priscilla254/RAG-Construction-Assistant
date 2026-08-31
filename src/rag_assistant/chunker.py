@@ -49,17 +49,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from rag_assistant.approved_documents import map_document
+from rag_assistant.config import ChunkingConfig, Config
 from rag_assistant.documents import known_headings_for
 from rag_assistant.headings import trim_trailing_headings
 from rag_assistant.hsg141 import CASE_STUDY_START_RE, section_for_paragraph
 from rag_assistant.hsg150 import label_paragraphs, peel_trailing_subheading
+from rag_assistant.publisher_matter import looks_like_publisher_matter
 from rag_assistant.watermark import first_substantive_line
 
 # --- tunables -----------------------------------------------------------
-
-# Sizes are measured in WORDS, matching the chunking section of config.yaml.
-DEFAULT_CHUNK_SIZE_WORDS = 400
-DEFAULT_CHUNK_OVERLAP_WORDS = 60
 
 # Matches the start of a numbered paragraph, e.g. "29 Making electrical
 # services safe..." -- a line beginning with 1-3 digits, then whitespace,
@@ -230,6 +228,8 @@ def _flatten_pages(
     for page_number, text in pages:
         if not text:
             continue
+        if looks_like_publisher_matter(text):
+            continue
         page_starts.append(offset)
         page_numbers.append(page_number)
         parts.append(text)
@@ -294,12 +294,22 @@ class DocumentChunker:
 
     def __init__(
         self,
-        chunk_size: int = DEFAULT_CHUNK_SIZE_WORDS,
-        chunk_overlap: int = DEFAULT_CHUNK_OVERLAP_WORDS,
+        chunk_size: int | None = None,
+        chunk_overlap: int | None = None,
     ) -> None:
-        self.chunk_size = chunk_size
-        self.chunk_overlap = chunk_overlap
+        defaults = ChunkingConfig()
+        self.chunk_size = defaults.chunk_size if chunk_size is None else chunk_size
+        self.chunk_overlap = (
+            defaults.chunk_overlap if chunk_overlap is None else chunk_overlap
+        )
         self._counter = 0  # used to generate readable, ordered chunk_ids
+
+    @classmethod
+    def from_config(cls, config: Config) -> DocumentChunker:
+        return cls(
+            chunk_size=config.chunking.chunk_size,
+            chunk_overlap=config.chunking.chunk_overlap,
+        )
 
     def chunk(self, document: dict) -> list[Chunk]:
         """Dispatch to the right strategy based on the document's doc_type."""
@@ -438,9 +448,12 @@ class DocumentChunker:
 
         dropped = [n for n, _ in pages if structure[n].is_index]
         for page_number in dropped:
-            print(f"  dropped page {page_number}: contents/index, no clause content")
+            print(
+                f"  dropped page {page_number}: "
+                "contents/index/publisher matter, no clause content"
+            )
         if dropped:
-            print(f"  dropped {len(dropped)} contents/index pages in total")
+            print(f"  dropped {len(dropped)} contents/index/publisher pages in total")
 
         kept = [(n, t) for n, t in pages if not structure[n].is_index]
 
@@ -943,10 +956,7 @@ def chunk_corpus(config) -> Path:
 
             # A fresh chunker per document keeps chunk_id numbering
             # restarting at 0001 within each source file.
-            chunker = DocumentChunker(
-                chunk_size=config.chunking.chunk_size,
-                chunk_overlap=config.chunking.chunk_overlap,
-            )
+            chunker = DocumentChunker.from_config(config)
             chunks = chunker.chunk(document)
             for chunk in chunks:
                 out_file.write(json.dumps(chunk.to_dict(), ensure_ascii=False) + "\n")

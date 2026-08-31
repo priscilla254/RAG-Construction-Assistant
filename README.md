@@ -37,6 +37,9 @@ python scripts/run_ingestion.py
 python scripts/run_chunking.py
 python scripts/run_embedding.py
 python scripts/spot_check_retrieval.py
+python scripts/cli.py "How high should scaffold guard rails be?"
+python scripts/cli.py --debug "How high should scaffold guard rails be?"
+python scripts/cli.py --file scripts/batch_questions.txt
 python -m pytest tests
 ```
 
@@ -82,14 +85,14 @@ src/rag_assistant/
   vector_store.py        Chroma wrapper
   keyword_search.py      BM25Okapi
   retriever.py           HybridRetriever (RRF)
-  generator.py           stub
-  pipeline.py            stub
+  generator.py           Groq, IEEE citations
+  pipeline.py            RetrievalPipeline.answer
   config.py              reads config.yaml
 
 scripts/
   run_ingestion.py / run_chunking.py / run_embedding.py
   spot_check_cleaned.py / spot_check_chunks.py / spot_check_retrieval.py
-  cli.py                 stub
+  cli.py                 ask one or many questions (`--file`, `-q`, `--debug`)
 
 data/                    raw PDFs, cleaned JSON, chunks.jsonl, chroma_db
 config.yaml              paths, chunk size, embedding model, retrieval weights

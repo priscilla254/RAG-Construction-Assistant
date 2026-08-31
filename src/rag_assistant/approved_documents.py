@@ -34,6 +34,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from rag_assistant.publisher_matter import looks_like_publisher_matter
 from rag_assistant.watermark import strip_watermark_line
 
 # Publication order within the merged file. "7" is the Regulation 7
@@ -289,7 +290,7 @@ def map_document(pages: list[tuple[int, str]]) -> dict[int, PageStructure]:
             part_code=part_code,
             part_title=PART_TITLES.get(part_code, ""),
             section_title=current_section,
-            is_index=looks_like_index(text),
+            is_index=looks_like_index(text) or looks_like_publisher_matter(text),
         )
 
     return structure

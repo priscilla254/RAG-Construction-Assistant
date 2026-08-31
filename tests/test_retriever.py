@@ -1,3 +1,6 @@
+from types import SimpleNamespace
+
+from rag_assistant.config import RetrievalConfig
 from rag_assistant.retriever import HybridRetriever, reciprocal_rank_fusion
 
 
@@ -37,6 +40,21 @@ def test_hybrid_retriever_init():
         keyword_weight=0.3,
     )
     assert retriever.k == 5
+
+
+def test_hybrid_retriever_from_config_reads_k_and_weights():
+    config = SimpleNamespace(
+        retrieval=RetrievalConfig(k=3, vector_weight=0.9, keyword_weight=0.1)
+    )
+    retriever = HybridRetriever.from_config(
+        config,  # type: ignore[arg-type]
+        vector_store=_FakeStore([]),  # type: ignore[arg-type]
+        keyword_search=_FakeKeywords([]),  # type: ignore[arg-type]
+        embedder=_FakeEmbedder(),  # type: ignore[arg-type]
+    )
+    assert retriever.k == 3
+    assert retriever.vector_weight == 0.9
+    assert retriever.keyword_weight == 0.1
 
 
 def test_reciprocal_rank_fusion_promotes_items_on_both_lists():

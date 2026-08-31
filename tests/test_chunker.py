@@ -24,6 +24,12 @@ def test_chunker_init():
     assert chunker.chunk_overlap == 60
 
 
+def test_chunker_defaults_come_from_config_dataclass():
+    chunker = DocumentChunker()
+    assert chunker.chunk_size == 400
+    assert chunker.chunk_overlap == 60
+
+
 def test_voltages_are_not_mistaken_for_paragraph_numbers():
     text = (
         "1 Electricity can kill.\n"

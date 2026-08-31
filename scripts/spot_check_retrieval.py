@@ -66,20 +66,16 @@ def _print_hits(label: str, hits: list[dict], expect_ids: set[str]) -> bool:
 
 def main() -> None:
     config = Config.from_yaml(ROOT / "config.yaml")
-    embedder = Embedder(
-        model_name=config.embedding.model_name,
-        batch_size=config.embedding.batch_size,
-    )
+    embedder = Embedder.from_config(config)
     store = VectorStore(config.paths.chroma_dir)
     keywords = KeywordSearch(load_chunks(config.paths.chunks_path))
-    hybrid = HybridRetriever(
+    hybrid = HybridRetriever.from_config(
+        config,
         vector_store=store,
         keyword_search=keywords,
         embedder=embedder,
-        k=config.retrieval.k,
-        vector_weight=config.retrieval.vector_weight,
-        keyword_weight=config.retrieval.keyword_weight,
     )
+    top_k = config.retrieval.k
 
     vector_hits_count = 0
     hybrid_hits_count = 0
@@ -87,11 +83,11 @@ def main() -> None:
         vector = embedder.embed_query(check["question"])
         vector_hits = store.query(
             vector,
-            k=5,
+            k=top_k,
             model_name=embedder.model_name,
             dimension=embedder.dimension,
         )
-        hybrid_hits = hybrid.retrieve(check["question"], k=5)
+        hybrid_hits = hybrid.retrieve(check["question"], k=top_k)
 
         print("=" * 80)
         print(f"Q{index}: {check['question']}")
@@ -103,7 +99,7 @@ def main() -> None:
     print(
         f"vector {vector_hits_count}/{len(CHECKS)}  "
         f"hybrid {hybrid_hits_count}/{len(CHECKS)}  "
-        f"had an expected chunk in top-5"
+        f"had an expected chunk in top-{top_k}"
     )
 
 

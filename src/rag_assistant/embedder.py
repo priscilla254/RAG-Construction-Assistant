@@ -17,12 +17,11 @@ collection exists requires a full rebuild -- VectorStore enforces that.
 from __future__ import annotations
 
 from rag_assistant.chunker import Chunk
+from rag_assistant.config import Config, EmbeddingConfig
 
 # Official BGE retrieval instruction. Applied to queries only; document
 # text is encoded as-is. MiniLM and other symmetric models skip this.
 BGE_QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
-
-DEFAULT_BATCH_SIZE = 64
 
 
 def _resolve_device(device: str | None) -> str:
@@ -39,16 +38,25 @@ def _resolve_device(device: str | None) -> str:
 class Embedder:
     def __init__(
         self,
-        model_name: str,
-        batch_size: int = DEFAULT_BATCH_SIZE,
+        model_name: str | None = None,
+        batch_size: int | None = None,
         device: str | None = None,
     ) -> None:
-        if batch_size < 1:
-            raise ValueError(f"batch_size must be >= 1, got {batch_size}")
-        self.model_name = model_name
-        self.batch_size = batch_size
+        defaults = EmbeddingConfig()
+        self.model_name = model_name or defaults.model_name
+        self.batch_size = defaults.batch_size if batch_size is None else batch_size
+        if self.batch_size < 1:
+            raise ValueError(f"batch_size must be >= 1, got {self.batch_size}")
         self.device = _resolve_device(device)
         self._model = None
+
+    @classmethod
+    def from_config(cls, config: Config, device: str | None = None) -> Embedder:
+        return cls(
+            model_name=config.embedding.model_name,
+            batch_size=config.embedding.batch_size,
+            device=device,
+        )
 
     @property
     def model(self):
