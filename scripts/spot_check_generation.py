@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from rag_assistant.config import Config  # noqa: E402
+from rag_assistant.generator import CITATION_RE  # noqa: E402
 from rag_assistant.pipeline import RetrievalPipeline  # noqa: E402
 
 from spot_check_retrieval import CHECKS  # noqa: E402
@@ -24,7 +25,6 @@ NUMBER_RE = re.compile(
     r"\b\d+(?:\.\d+)?(?:\s*(?:mm|m|V|kV|days?))?\b",
     re.I,
 )
-CITATION_RE = re.compile(r"\[(\d+)\]")
 
 
 def _normalise(text: str) -> str:

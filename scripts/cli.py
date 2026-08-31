@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from rag_assistant.config import Config  # noqa: E402
-from rag_assistant.generator import _passage_label  # noqa: E402
+from rag_assistant.generator import passage_label  # noqa: E402
 from rag_assistant.pipeline import RetrievalPipeline  # noqa: E402
 
 
@@ -144,7 +144,7 @@ def _print_retrieved(chunks: list[dict]) -> None:
         score_bit = f"  rrf={score:.4f}" if isinstance(score, (int, float)) else ""
         chunk_id = chunk.get("chunk_id") or "?"
         print(f"  [{rank}] {chunk_id}{score_bit}")
-        heading = _passage_label(chunk)
+        heading = passage_label(chunk)
         if heading:
             print(f"      {heading}")
         preview = " ".join((chunk.get("text") or "").split())[:160]

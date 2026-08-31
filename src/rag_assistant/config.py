@@ -37,7 +37,7 @@ class GenerationConfig:
     provider: str = "groq"
     model_name: str = "openai/gpt-oss-20b"
     temperature: float = 0.1
-    max_tokens: int = 1024
+    max_tokens: int = 2048
     # True: list every retrieved passage (debug). False: cited [n] only (demo).
     show_all_sources: bool = True
 

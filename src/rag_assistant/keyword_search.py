@@ -18,6 +18,7 @@ TOKEN_RE = re.compile(r"[a-z0-9]+(?:[./-][a-z0-9]+)*", re.I)
 
 
 def tokenize(text: str) -> list[str]:
+    """Lowercased tokens, keeping measures such as 950mm and clause 1.5."""
     return TOKEN_RE.findall(text.lower())
 
 
@@ -28,6 +29,7 @@ class KeywordSearch:
         self._bm25 = BM25Okapi(self._tokens) if self.chunks else None
 
     def search(self, query: str, k: int) -> list[dict]:
+        """Top-k chunks by BM25. Zero-score documents are dropped."""
         if self._bm25 is None or k < 1 or not query.strip():
             return []
 

@@ -84,6 +84,7 @@ def test_dataclass_defaults_hold_k_model_and_chunk_size():
     assert RetrievalConfig().k == 5
     assert RetrievalConfig().max_per_source == 3
     assert GenerationConfig().model_name == "openai/gpt-oss-20b"
+    assert GenerationConfig().max_tokens == 2048
 
 
 def test_missing_yaml_keys_fall_back_to_dataclass_defaults(tmp_path):

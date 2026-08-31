@@ -12,12 +12,8 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "eval"))
 
 from evaluator import Evaluator  # noqa: E402
-from rag_assistant.chunker import load_chunks  # noqa: E402
 from rag_assistant.config import Config  # noqa: E402
-from rag_assistant.embedder import Embedder  # noqa: E402
-from rag_assistant.keyword_search import KeywordSearch  # noqa: E402
 from rag_assistant.retriever import HybridRetriever  # noqa: E402
-from rag_assistant.vector_store import VectorStore  # noqa: E402
 
 DEFAULT_EVAL_SET = ROOT / "eval" / "eval_set.json"
 DEFAULT_OUTPUT = ROOT / "eval" / "results.json"
@@ -66,13 +62,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _retriever(config: Config) -> HybridRetriever:
-    embedder = Embedder.from_config(config)
-    return HybridRetriever.from_config(
-        config,
-        vector_store=VectorStore(config.paths.chroma_dir),
-        keyword_search=KeywordSearch(load_chunks(config.paths.chunks_path)),
-        embedder=embedder,
-    )
+    return HybridRetriever.build(config)
 
 
 def _report_payload(result: dict, k: int, eval_set: Path) -> dict:

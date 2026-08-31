@@ -18,6 +18,7 @@ returns k chunks.
 
 from __future__ import annotations
 
+from rag_assistant.chunker import load_chunks
 from rag_assistant.config import Config
 from rag_assistant.embedder import Embedder
 from rag_assistant.keyword_search import KeywordSearch
@@ -49,6 +50,8 @@ def reciprocal_rank_fusion(
 
 
 class HybridRetriever:
+    """Vector + BM25 fused with RRF, then optionally capped per PDF."""
+
     def __init__(
         self,
         vector_store: VectorStore,
@@ -85,7 +88,21 @@ class HybridRetriever:
             max_per_source=config.retrieval.max_per_source,
         )
 
+    @classmethod
+    def build(cls, config: Config) -> HybridRetriever:
+        """Load Chroma, BM25, and the embedder from the paths in config."""
+        embedder = Embedder.from_config(config)
+        return cls.from_config(
+            config,
+            vector_store=VectorStore(config.paths.chroma_dir),
+            keyword_search=KeywordSearch(load_chunks(config.paths.chunks_path)),
+            embedder=embedder,
+        )
+
     def retrieve(self, query: str, k: int | None = None) -> list[dict]:
+        """Return up to k fused hits. Pool is larger than k so the cap can
+        promote a later hit from a second PDF into the final list.
+        """
         top_k = self.k if k is None else k
         if top_k < 1 or not query.strip():
             return []

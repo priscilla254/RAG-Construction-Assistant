@@ -123,7 +123,27 @@ class Generator:
         return (completion.choices[0].message.content or "").strip()
 
 
-def _cited_chunks(chunks: list[dict]) -> list[tuple[int, dict]]:
+def _format_passages(chunks: list[dict]) -> str:
+    blocks: list[str] = []
+    for index, chunk in cited_passages(chunks):
+        body = (chunk.get("text") or "").strip()
+        blocks.append(
+            f"[{index}] {passage_label(chunk)}\nPassage text:\n{body}"
+        )
+    return "\n\n".join(blocks)
+
+
+def citation_numbers(answer: str) -> set[int]:
+    """IEEE [n] markers found in the answer body."""
+    return {int(number) for number in CITATION_RE.findall(answer)}
+
+
+def cited_passages(
+    chunks: list[dict],
+    answer: str = "",
+    show_all_sources: bool = True,
+) -> list[tuple[int, dict]]:
+    """Number non-empty retrieved chunks 1..n, optionally keeping only [n] cites."""
     numbered: list[tuple[int, dict]] = []
     index = 0
     for chunk in chunks:
@@ -131,21 +151,10 @@ def _cited_chunks(chunks: list[dict]) -> list[tuple[int, dict]]:
             continue
         index += 1
         numbered.append((index, chunk))
-    return numbered
-
-
-def _format_passages(chunks: list[dict]) -> str:
-    blocks: list[str] = []
-    for index, chunk in _cited_chunks(chunks):
-        body = (chunk.get("text") or "").strip()
-        blocks.append(
-            f"[{index}] {_passage_label(chunk)}\nPassage text:\n{body}"
-        )
-    return "\n\n".join(blocks)
-
-
-def _citation_numbers(answer: str) -> set[int]:
-    return {int(number) for number in CITATION_RE.findall(answer)}
+    if show_all_sources:
+        return numbered
+    cited = citation_numbers(answer)
+    return [(i, chunk) for i, chunk in numbered if i in cited]
 
 
 def _format_source_list(
@@ -153,17 +162,16 @@ def _format_source_list(
     answer: str = "",
     show_all_sources: bool = True,
 ) -> str:
-    numbered = _cited_chunks(chunks)
-    if not show_all_sources:
-        cited = _citation_numbers(answer)
-        numbered = [(index, chunk) for index, chunk in numbered if index in cited]
     return "\n".join(
-        f"[{index}] {_passage_label(chunk)}"
-        for index, chunk in numbered
+        f"[{index}] {passage_label(chunk)}"
+        for index, chunk in cited_passages(
+            chunks, answer=answer, show_all_sources=show_all_sources
+        )
     )
 
 
-def _passage_label(chunk: dict) -> str:
+def passage_label(chunk: dict) -> str:
+    """Human-readable citation line for a retrieved chunk."""
     # The context prefix is the citation trail built at chunk time
     # ("Approved Document B: Fire safety — … clause 2.1"). Prefer it
     # over the merged-file title, which does not name the Part.

@@ -8,10 +8,11 @@ from pathlib import Path
 
 DEFAULT_K = 5
 
-_PARA_RE = re.compile(
-    r"(?:paragraphs?|paras?)\s+(\d+)(?:\s*[-–]\s*(\d+))?",
+_PARA_HEAD_RE = re.compile(
+    r"(?:paragraphs?|paras?)\s+(.+?)(?=\)|$)",
     re.I,
 )
+_PARA_RANGE_RE = re.compile(r"^(\d+)(?:\s*[-–]\s*(\d+))?$")
 _CLAUSE_RE = re.compile(
     r"clauses?\s+(\d+\.\d+)(?:\s*[-–]\s*(\d+\.\d+))?",
     re.I,
@@ -26,11 +27,14 @@ _SECTION_PARA_RE = re.compile(
 
 
 class Evaluator:
+    """Score retrieved chunks against labeled source + section gold."""
+
     def __init__(self, retriever, k: int | None = None) -> None:
         self.retriever = retriever
         self.k = k
 
     def recall_at_k(self, retrieved_ids: list[str], relevant_ids: list[str], k: int) -> float:
+        """Fraction of relevant ids that appear in the top-k retrieved ids."""
         if not relevant_ids:
             return 0.0
         top = set(retrieved_ids[:k])
@@ -38,6 +42,7 @@ class Evaluator:
         return hits / len(relevant_ids)
 
     def run(self, eval_set: list[dict] | Path | str) -> dict:
+        """Mean recall over labeled items. Unlabeled (null gold) are omitted."""
         items = _load_eval_set(eval_set)
         k = self._k()
         rows: list[dict] = []
@@ -169,8 +174,12 @@ def _part_matches(chunk: dict, expected_part: str) -> bool:
 def _parse_expected_section(section: str) -> tuple[set[int], set[str], str | None]:
     paras: set[int] = set()
     clauses: set[str] = set()
-    for match in _PARA_RE.finditer(section or ""):
-        paras |= _int_range(match.group(1), match.group(2))
+    # "paragraphs 352-353 and 366-369" — both ranges, not only the first.
+    for match in _PARA_HEAD_RE.finditer(section or ""):
+        for token in re.split(r"\s*(?:,|and)\s*", match.group(1)):
+            range_match = _PARA_RANGE_RE.match(token.strip())
+            if range_match:
+                paras |= _int_range(range_match.group(1), range_match.group(2))
     for match in _CLAUSE_RE.finditer(section or ""):
         clauses |= _clause_range(match.group(1), match.group(2))
     ad = _AD_RE.search(section or "")

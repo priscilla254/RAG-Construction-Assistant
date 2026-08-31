@@ -202,3 +202,15 @@ def test_run_does_not_match_same_clause_in_a_different_approved_document():
     )
     result = Evaluator(retriever, k=5).run([item])
     assert result["recall_at_k"] == 0.0
+
+
+def test_parse_expected_section_keeps_both_paragraph_ranges():
+    from evaluator import _parse_expected_section
+
+    paras, clauses, part = _parse_expected_section(
+        "HSG150 Section 3 — Underground services "
+        "(paragraphs 352-353 and 366-369)"
+    )
+    assert paras == set(range(352, 354)) | set(range(366, 370))
+    assert clauses == set()
+    assert part is None
