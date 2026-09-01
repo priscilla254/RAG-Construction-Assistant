@@ -2,11 +2,60 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
 from dotenv import load_dotenv
+
+try:
+    import tomllib
+except ImportError:  # pragma: no cover
+    tomllib = None  # type: ignore[assignment]
+
+
+def parse_secrets_text(text: str) -> dict[str, str]:
+    """Read GROQ-style KEY = value from TOML or dotenv `KEY=value` lines."""
+    values: dict[str, str] = {}
+    if tomllib is not None:
+        try:
+            loaded = tomllib.loads(text)
+        except tomllib.TOMLDecodeError:
+            loaded = None
+        if isinstance(loaded, dict):
+            for key, value in loaded.items():
+                if isinstance(value, str):
+                    values[str(key)] = value
+    if "GROQ_API_KEY" in values:
+        return values
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, _, value = stripped.partition("=")
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key:
+            values[key] = value
+    return values
+
+
+def apply_streamlit_secrets_file(path: Path) -> None:
+    """Set GROQ_API_KEY from secrets.toml without using st.secrets.
+
+    Streamlit Cloud writes App settings → Secrets to this file. Accessing
+    st.secrets on invalid TOML (dotenv lines, a bare key) prints a parse
+    error and never exposes the key. .env already wins if the var is set.
+    """
+    if os.environ.get("GROQ_API_KEY", "").strip():
+        return
+    if not path.is_file():
+        return
+    values = parse_secrets_text(path.read_text(encoding="utf-8"))
+    key = (values.get("GROQ_API_KEY") or "").strip()
+    if key:
+        os.environ["GROQ_API_KEY"] = key
 
 
 @dataclass
@@ -67,6 +116,7 @@ class Config:
             config_path = Path.cwd() / config_path
         config_path = config_path.resolve()
         root = config_path.parent
+        apply_streamlit_secrets_file(root / ".streamlit" / "secrets.toml")
         raw = yaml.safe_load(config_path.read_text(encoding="utf-8"))
 
         def _p(value: str) -> Path:

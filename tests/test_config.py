@@ -1,3 +1,5 @@
+import os
+
 from rag_assistant.chunker import DocumentChunker
 from rag_assistant.config import (
     ChunkingConfig,
@@ -144,3 +146,32 @@ generation:
     assert embedder.batch_size == 8
     assert config.retrieval.k == 3
     assert config.generation.model_name == "unit-test-llm"
+
+
+def test_parse_secrets_text_reads_toml_and_dotenv():
+    from rag_assistant.config import parse_secrets_text
+
+    toml_values = parse_secrets_text('GROQ_API_KEY = "gsk_toml"\n')
+    assert toml_values["GROQ_API_KEY"] == "gsk_toml"
+    env_values = parse_secrets_text("GROQ_API_KEY=gsk_env\n")
+    assert env_values["GROQ_API_KEY"] == "gsk_env"
+
+
+def test_apply_streamlit_secrets_file_sets_env(tmp_path, monkeypatch):
+    from rag_assistant.config import apply_streamlit_secrets_file
+
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    path = tmp_path / "secrets.toml"
+    path.write_text("GROQ_API_KEY=gsk_from_file\n", encoding="utf-8")
+    apply_streamlit_secrets_file(path)
+    assert os.environ["GROQ_API_KEY"] == "gsk_from_file"
+
+
+def test_apply_streamlit_secrets_file_does_not_override_env(tmp_path, monkeypatch):
+    from rag_assistant.config import apply_streamlit_secrets_file
+
+    monkeypatch.setenv("GROQ_API_KEY", "already-set")
+    path = tmp_path / "secrets.toml"
+    path.write_text('GROQ_API_KEY = "from-file"\n', encoding="utf-8")
+    apply_streamlit_secrets_file(path)
+    assert os.environ["GROQ_API_KEY"] == "already-set"

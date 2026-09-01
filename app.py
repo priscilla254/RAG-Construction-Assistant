@@ -17,21 +17,23 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from rag_assistant.config import Config
+from dotenv import load_dotenv
+
+from rag_assistant.config import Config, apply_streamlit_secrets_file
 from rag_assistant.pipeline import RetrievalPipeline
 
 CHUNKS_PATH = ROOT / "data" / "chunks.jsonl"
 CHROMA_SQLITE = ROOT / "data" / "chroma_db" / "chroma.sqlite3"
 
-
-def _apply_cloud_secrets() -> None:
-    """Copy Streamlit Cloud secrets into the env vars the generator reads."""
-    try:
-        key = st.secrets.get("GROQ_API_KEY", "")
-    except Exception:
-        return
-    if key:
-        os.environ["GROQ_API_KEY"] = str(key).strip()
+_SECRETS_HINT = (
+    "GROQ_API_KEY is not set. On Streamlit Cloud open **App settings → "
+    "Secrets**, replace the box with this TOML (quotes required), save, "
+    "then reboot:\n\n"
+    'GROQ_API_KEY = "gsk_your_key"\n\n'
+    "Do not paste the key alone, and do not use `.env` syntax "
+    "(`GROQ_API_KEY=...`) if Streamlit still shows a parse error. "
+    "Locally, use a `.env` file instead."
+)
 
 
 def _index_ready() -> bool:
@@ -54,7 +56,8 @@ st.set_page_config(page_title="RAG Construction Assistant", layout="wide")
 st.title("RAG Construction Assistant")
 st.caption("Ask questions over UK building regulations and HSE construction guidance.")
 
-_apply_cloud_secrets()
+load_dotenv()
+apply_streamlit_secrets_file(ROOT / ".streamlit" / "secrets.toml")
 
 if not _index_ready():
     st.error(
@@ -65,10 +68,7 @@ if not _index_ready():
     st.stop()
 
 if not os.environ.get("GROQ_API_KEY", "").strip():
-    st.error(
-        "GROQ_API_KEY is not set. Locally use a `.env` file. On Streamlit "
-        "Cloud add it under App settings → Secrets."
-    )
+    st.error(_SECRETS_HINT)
     st.stop()
 
 

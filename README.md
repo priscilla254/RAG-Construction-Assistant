@@ -61,11 +61,13 @@ streamlit run app.py
 `runtime.txt` pins **Python 3.12** (3.14 has no wheels for these packages). In the Cloud app also set Python 3.12 under **Settings**.
 
 1. Push `data/chunks.jsonl` and `data/chroma_db/` (about 80 MB). Do **not** push `data/raw/` PDFs.
-2. App settings → **Secrets**, same as `.streamlit/secrets.toml.example`:
+2. App settings → **Secrets**. Paste **only** this (replace with your real key), save, reboot:
 
 ```toml
-GROQ_API_KEY = "gsk_..."
+GROQ_API_KEY = "gsk_your_key_here"
 ```
+
+Do not paste the key on its own. Quotes are required.
 
 3. Main file: `app.py`. First load downloads the BGE embedding model and can take a few minutes.
 
