@@ -14,6 +14,7 @@ Construction questions sit across **regulations** (Approved Documents) and **HSE
 
 ## Demo
 
+![Streamlit demo with a cited answer, sources, and the test gallery](docs/demo.png)
 
 The demo has a question box, cited-only sources, and a **test gallery** of labeled eval questions (including ones the documents should not answer).
 

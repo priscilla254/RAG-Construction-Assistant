@@ -1,0 +1,515 @@
+{
+  "k": 10,
+  "eval_set": "C:\\Users\\prisc\\OneDrive\\Desktop\\Projects\\RAG construction assistant\\eval\\eval_set.json",
+  "recall_at_k": 0.925,
+  "scored": 20,
+  "full_hits": 18,
+  "unlabeled": 5,
+  "results_table": [
+    {
+      "question": "How high do scaffold guard rails need to be?",
+      "expected_source": "hsg150.pdf",
+      "expected_section": "Section 3: Construction-phase health and safety — Working at height — Guard rails, toe boards and brick guards (paragraphs 148-151)",
+      "retrieved": [
+        "hsg150_0097",
+        "hsg150_0090",
+        "hsg150_0087",
+        "The_Merged_Approved_Documents_Oct24_2314",
+        "The_Merged_Approved_Documents_Oct24_2299",
+        "The_Merged_Approved_Documents_Oct24_2315",
+        "hsg150_0089",
+        "hsg150_0095",
+        "hsg150_0088",
+        "hsg150_0418"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "When do I have to notify HSE about a construction site?",
+      "expected_source": "hsg150.pdf",
+      "expected_section": "Section 1: Preparing for work — Notifying the site to HSE (paragraphs 34-36)",
+      "retrieved": [
+        "hsg150_0022",
+        "hsg150_0021",
+        "hsg150_0408",
+        "hsg141_0089",
+        "hsg141_0068",
+        "hsg141_0062",
+        "The_Merged_Approved_Documents_Oct24_0979",
+        "The_Merged_Approved_Documents_Oct24_0982",
+        "The_Merged_Approved_Documents_Oct24_0485",
+        "hsg150_0058"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "Do we have to provide drinking water on site, and how?",
+      "expected_source": "hsg150.pdf",
+      "expected_section": "Section 2: Setting up the site — Welfare facilities — Drinking water (paragraphs 66-68)",
+      "retrieved": [
+        "hsg150_0037",
+        "hsg150_0036",
+        "hsg150_0030",
+        "The_Merged_Approved_Documents_Oct24_1668",
+        "The_Merged_Approved_Documents_Oct24_1675",
+        "The_Merged_Approved_Documents_Oct24_1669",
+        "hsg141_0015",
+        "hsg141_0016",
+        "hsg150_0028",
+        "hsg150_0026"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "What is an appointed person for first aid, and when do we need one?",
+      "expected_source": "hsg150.pdf",
+      "expected_section": "Section 2: Setting up the site — First aid (paragraphs 94-97)",
+      "retrieved": [
+        "hsg150_0056",
+        "hsg150_0057",
+        "hsg150_0055",
+        "The_Merged_Approved_Documents_Oct24_3237",
+        "hsg141_0012",
+        "The_Merged_Approved_Documents_Oct24_1756",
+        "The_Merged_Approved_Documents_Oct24_1729",
+        "hsg141_0010",
+        "hsg141_0014",
+        "hsg150_0382"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "How far above the landing should a ladder stick up, and how should it be tied?",
+      "expected_source": "hsg150.pdf",
+      "expected_section": "Section 3: Construction-phase health and safety — Working at height — Ladders and stepladders (paragraphs 218-223)",
+      "retrieved": [
+        "hsg150_0138",
+        "hsg150_0137",
+        "hsg150_0144",
+        "The_Merged_Approved_Documents_Oct24_0642",
+        "The_Merged_Approved_Documents_Oct24_2291",
+        "The_Merged_Approved_Documents_Oct24_2292",
+        "hsg141_0015",
+        "hsg150_0139",
+        "The_Merged_Approved_Documents_Oct24_0638",
+        "The_Merged_Approved_Documents_Oct24_2299"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "Why do we use 110 V on site instead of 230 V mains for tools?",
+      "expected_source": "hsg141.pdf",
+      "expected_section": "Part 1: Planning (pre-construction phase) (paragraph 36)",
+      "retrieved": [
+        "hsg141_0038",
+        "hsg141_0061",
+        "hsg141_0037",
+        "hsg150_0287",
+        "hsg150_0286",
+        "hsg150_0422",
+        "The_Merged_Approved_Documents_Oct24_3343",
+        "The_Merged_Approved_Documents_Oct24_2388",
+        "The_Merged_Approved_Documents_Oct24_0470",
+        "hsg141_0072"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "How should we find buried cables before we start digging?",
+      "expected_source": "hsg141.pdf",
+      "expected_section": "Part 1: Planning (pre-construction phase) (paragraphs 21-22)",
+      "retrieved": [
+        "hsg141_0047",
+        "hsg141_0021",
+        "hsg150_0226",
+        "hsg150_0225",
+        "hsg141_0022",
+        "hsg150_0221",
+        "The_Merged_Approved_Documents_Oct24_3430",
+        "The_Merged_Approved_Documents_Oct24_3429",
+        "The_Merged_Approved_Documents_Oct24_1925",
+        "hsg150_0213"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "What checks do we need on portable electrical tools on site?",
+      "expected_source": "hsg141.pdf",
+      "expected_section": "Part 2: Managing electrical risks (construction phase) (paragraphs 67-69)",
+      "retrieved": [
+        "hsg141_0073",
+        "hsg150_0291",
+        "hsg141_0075",
+        "hsg141_0071",
+        "hsg150_0286",
+        "hsg150_0292",
+        "The_Merged_Approved_Documents_Oct24_3232",
+        "The_Merged_Approved_Documents_Oct24_3221",
+        "The_Merged_Approved_Documents_Oct24_3238",
+        "hsg141_0072"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "How do we stop plant hitting overhead power lines?",
+      "expected_source": "hsg141.pdf",
+      "expected_section": "Part 1: Planning (pre-construction phase) (paragraphs 17-19)",
+      "retrieved": [
+        "hsg141_0018",
+        "hsg150_0294",
+        "hsg150_0296",
+        "hsg150_0297",
+        "hsg141_0042",
+        "hsg141_0019",
+        "The_Merged_Approved_Documents_Oct24_2434",
+        "The_Merged_Approved_Documents_Oct24_1719",
+        "The_Merged_Approved_Documents_Oct24_2726",
+        "hsg150_0295"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "What are the risks of using a generator on site, especially in a confined space?",
+      "expected_source": "hsg141.pdf",
+      "expected_section": "Part 3: Systems and equipment (paragraphs 81-82)",
+      "retrieved": [
+        "hsg150_0302",
+        "hsg150_0303",
+        "hsg150_0305",
+        "hsg141_0089",
+        "hsg141_0088",
+        "hsg141_0019",
+        "The_Merged_Approved_Documents_Oct24_0957",
+        "The_Merged_Approved_Documents_Oct24_0956",
+        "The_Merged_Approved_Documents_Oct24_0979",
+        "hsg150_0301"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "What fire escape does a habitable room in a house need?",
+      "expected_source": "The_Merged_Approved_Documents_Oct24.pdf",
+      "expected_section": "Approved Document B — Section 2: Means of escape – dwellinghouses (clauses 2.1-2.2)",
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_0176",
+        "The_Merged_Approved_Documents_Oct24_0208",
+        "The_Merged_Approved_Documents_Oct24_0209",
+        "The_Merged_Approved_Documents_Oct24_0212",
+        "The_Merged_Approved_Documents_Oct24_0177",
+        "The_Merged_Approved_Documents_Oct24_0185",
+        "The_Merged_Approved_Documents_Oct24_0201",
+        "The_Merged_Approved_Documents_Oct24_0886",
+        "The_Merged_Approved_Documents_Oct24_0477",
+        "The_Merged_Approved_Documents_Oct24_0583"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "Do all the steps on a stair have to be the same rise and going?",
+      "expected_source": "The_Merged_Approved_Documents_Oct24.pdf",
+      "expected_section": "Approved Document K — Section 1: Stairs and ladders (clauses 1.5-1.6)",
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_2278",
+        "The_Merged_Approved_Documents_Oct24_2280",
+        "The_Merged_Approved_Documents_Oct24_2294",
+        "hsg150_0065",
+        "hsg150_0139",
+        "hsg150_0412",
+        "The_Merged_Approved_Documents_Oct24_2343",
+        "The_Merged_Approved_Documents_Oct24_2284",
+        "The_Merged_Approved_Documents_Oct24_2892",
+        "The_Merged_Approved_Documents_Oct24_2344"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "Where do smoke alarms go in a house, and do they have to be mains-powered?",
+      "expected_source": "The_Merged_Approved_Documents_Oct24.pdf",
+      "expected_section": "Approved Document B — Section 1: Fire detection and alarm systems (clauses 1.2-1.4 and 1.9-1.10)",
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_0170",
+        "The_Merged_Approved_Documents_Oct24_0167",
+        "The_Merged_Approved_Documents_Oct24_2155",
+        "hsg150_0300",
+        "hsg150_0167",
+        "hsg150_0299",
+        "hsg141_0016",
+        "The_Merged_Approved_Documents_Oct24_2194",
+        "The_Merged_Approved_Documents_Oct24_2224",
+        "The_Merged_Approved_Documents_Oct24_0458"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "Where do I need guarding to stop people falling, and how high should it be?",
+      "expected_source": "The_Merged_Approved_Documents_Oct24.pdf",
+      "expected_section": "Approved Document K — Section 3: Protection from falling (clauses 3.1-3.3)",
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_2313",
+        "The_Merged_Approved_Documents_Oct24_2315",
+        "The_Merged_Approved_Documents_Oct24_2301",
+        "hsg150_0209",
+        "hsg150_0089",
+        "hsg150_0311",
+        "The_Merged_Approved_Documents_Oct24_2314",
+        "The_Merged_Approved_Documents_Oct24_2302",
+        "The_Merged_Approved_Documents_Oct24_2321",
+        "hsg150_0091"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "What standard should electrical work in a new house be designed and installed to?",
+      "expected_source": "The_Merged_Approved_Documents_Oct24.pdf",
+      "expected_section": "Approved Document P — Section 1: Design and installation (clauses 1.1-1.3)",
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_3221",
+        "The_Merged_Approved_Documents_Oct24_3216",
+        "The_Merged_Approved_Documents_Oct24_3232",
+        "hsg141_0015",
+        "hsg141_0029",
+        "hsg150_0292",
+        "hsg141_0063",
+        "hsg150_0286",
+        "hsg150_0291",
+        "The_Merged_Approved_Documents_Oct24_2425"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "What do we need to do to avoid hitting buried electrical cables when excavating?",
+      "expected_source": [
+        "hsg141.pdf",
+        "hsg150.pdf"
+      ],
+      "expected_section": [
+        "HSG141 Part 1: Planning (pre-construction phase) (paragraphs 21-22)",
+        "HSG150 Section 3: Construction-phase health and safety — Groundwork — Underground services (paragraphs 352-353 and 366-369)"
+      ],
+      "retrieved": [
+        "hsg150_0226",
+        "hsg150_0221",
+        "hsg150_0421",
+        "hsg141_0062",
+        "hsg141_0052",
+        "hsg141_0015",
+        "The_Merged_Approved_Documents_Oct24_0234",
+        "The_Merged_Approved_Documents_Oct24_0676",
+        "The_Merged_Approved_Documents_Oct24_3430",
+        "hsg150_0213"
+      ],
+      "recall": 0.5,
+      "hit": false
+    },
+    {
+      "question": "Why are cordless tools or a 110 V supply safer than 230 V mains tools on site?",
+      "expected_source": [
+        "hsg141.pdf",
+        "hsg150.pdf"
+      ],
+      "expected_section": [
+        "HSG141 Part 1: Planning (pre-construction phase) (paragraph 36) and Part 2 (paragraphs 67-68)",
+        "HSG150 Section 3: Construction-phase health and safety — Electricity (paragraphs 479-480)"
+      ],
+      "retrieved": [
+        "hsg150_0287",
+        "hsg141_0038",
+        "hsg141_0072",
+        "hsg141_0062",
+        "hsg150_0286",
+        "hsg150_0288",
+        "The_Merged_Approved_Documents_Oct24_0470",
+        "The_Merged_Approved_Documents_Oct24_0879",
+        "The_Merged_Approved_Documents_Oct24_1929",
+        "hsg141_0037"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "What precautions do we need if plant is working near overhead power lines?",
+      "expected_source": [
+        "hsg141.pdf",
+        "hsg150.pdf"
+      ],
+      "expected_section": [
+        "HSG141 Part 1: Planning (pre-construction phase) (paragraphs 17-19)",
+        "HSG150 Section 3: Construction-phase health and safety — Electricity — Overhead power lines (paragraphs 493-500)"
+      ],
+      "retrieved": [
+        "hsg150_0296",
+        "hsg150_0297",
+        "hsg141_0018",
+        "hsg150_0294",
+        "hsg141_0042",
+        "hsg141_0019",
+        "The_Merged_Approved_Documents_Oct24_1081",
+        "The_Merged_Approved_Documents_Oct24_2426",
+        "hsg150_0295",
+        "hsg150_0213"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "How should we manage fire risk while the site is live, and what alarms and escape does a finished house need?",
+      "expected_source": [
+        "hsg150.pdf",
+        "The_Merged_Approved_Documents_Oct24.pdf"
+      ],
+      "expected_section": [
+        "HSG150 Section 2: Setting up the site — Fire (paragraphs 83-93)",
+        "Approved Document B — Section 1: Fire detection and alarm systems and Section 2: Means of escape – dwellinghouses"
+      ],
+      "retrieved": [
+        "hsg150_0046",
+        "hsg150_0044",
+        "hsg150_0052",
+        "The_Merged_Approved_Documents_Oct24_0561",
+        "The_Merged_Approved_Documents_Oct24_0189",
+        "The_Merged_Approved_Documents_Oct24_0572",
+        "hsg141_0089",
+        "hsg141_0016",
+        "hsg141_0015",
+        "hsg150_0299"
+      ],
+      "recall": 1.0,
+      "hit": true
+    },
+    {
+      "question": "How do you stop falls from a scaffold, and how should stairs and landings be guarded in a finished house?",
+      "expected_source": [
+        "hsg150.pdf",
+        "The_Merged_Approved_Documents_Oct24.pdf"
+      ],
+      "expected_section": [
+        "HSG150 Section 3: Construction-phase health and safety — Working at height — Guard rails, toe boards and brick guards (paragraphs 148-151)",
+        "Approved Document K — Section 1: Stairs and ladders (clauses 1.33-1.41) and Section 3: Protection from falling (clauses 3.1-3.3)"
+      ],
+      "retrieved": [
+        "hsg150_0085",
+        "hsg150_0084",
+        "hsg150_0335",
+        "The_Merged_Approved_Documents_Oct24_0179",
+        "The_Merged_Approved_Documents_Oct24_2282",
+        "The_Merged_Approved_Documents_Oct24_2290",
+        "hsg150_0077",
+        "hsg150_0088",
+        "hsg150_0331",
+        "hsg150_0209"
+      ],
+      "recall": 0.0,
+      "hit": false
+    },
+    {
+      "question": "What is the minimum ceiling height for a habitable room in a new house?",
+      "expected_source": null,
+      "expected_section": null,
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_1226",
+        "The_Merged_Approved_Documents_Oct24_1202",
+        "The_Merged_Approved_Documents_Oct24_2879",
+        "The_Merged_Approved_Documents_Oct24_1227",
+        "The_Merged_Approved_Documents_Oct24_1467",
+        "The_Merged_Approved_Documents_Oct24_1477",
+        "The_Merged_Approved_Documents_Oct24_1238",
+        "The_Merged_Approved_Documents_Oct24_1380",
+        "The_Merged_Approved_Documents_Oct24_1342",
+        "The_Merged_Approved_Documents_Oct24_2895"
+      ],
+      "recall": null,
+      "hit": null
+    },
+    {
+      "question": "What's the fall-protection trigger height on a US construction site under OSHA?",
+      "expected_source": null,
+      "expected_section": null,
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_0644",
+        "hsg150_0157",
+        "The_Merged_Approved_Documents_Oct24_2314",
+        "hsg150_0072",
+        "The_Merged_Approved_Documents_Oct24_2345",
+        "hsg150_0070",
+        "hsg141_0015",
+        "hsg141_0033",
+        "hsg141_0032",
+        "The_Merged_Approved_Documents_Oct24_2282"
+      ],
+      "recall": null,
+      "hit": null
+    },
+    {
+      "question": "Do I need listed building consent and planning permission for a loft conversion on a Victorian terrace?",
+      "expected_source": null,
+      "expected_section": null,
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_2982",
+        "The_Merged_Approved_Documents_Oct24_1422",
+        "The_Merged_Approved_Documents_Oct24_1568",
+        "hsg150_0016",
+        "hsg141_0062",
+        "hsg150_0250",
+        "The_Merged_Approved_Documents_Oct24_2057",
+        "The_Merged_Approved_Documents_Oct24_0952",
+        "The_Merged_Approved_Documents_Oct24_2897",
+        "The_Merged_Approved_Documents_Oct24_2984"
+      ],
+      "recall": null,
+      "hit": null
+    },
+    {
+      "question": "What does Approved Document T say about designing timber floors?",
+      "expected_source": null,
+      "expected_section": null,
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_0052",
+        "The_Merged_Approved_Documents_Oct24_0063",
+        "The_Merged_Approved_Documents_Oct24_0039",
+        "hsg150_0242",
+        "hsg150_0379",
+        "The_Merged_Approved_Documents_Oct24_2591",
+        "The_Merged_Approved_Documents_Oct24_1563",
+        "The_Merged_Approved_Documents_Oct24_1417",
+        "The_Merged_Approved_Documents_Oct24_3146",
+        "The_Merged_Approved_Documents_Oct24_0003"
+      ],
+      "recall": null,
+      "hit": null
+    },
+    {
+      "question": "Who won the 1966 World Cup, and what was the score?",
+      "expected_source": null,
+      "expected_section": null,
+      "retrieved": [
+        "The_Merged_Approved_Documents_Oct24_0923",
+        "The_Merged_Approved_Documents_Oct24_0514",
+        "The_Merged_Approved_Documents_Oct24_0128",
+        "hsg150_0415",
+        "hsg150_0417",
+        "hsg141_0034",
+        "hsg141_0015",
+        "hsg150_0234",
+        "hsg141_0003",
+        "The_Merged_Approved_Documents_Oct24_1793"
+      ],
+      "recall": null,
+      "hit": null
+    }
+  ]
+}
