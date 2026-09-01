@@ -1,18 +1,19 @@
 # Secrets
 .env
+.streamlit/secrets.toml
 
 # Virtual environments
 .venv/
 venv/
 env/
 
-# Large / generated data
+# Original PDFs and cleaned extracts (copyrighted / regenerable).
+# chunks.jsonl and chroma_db are committed so Streamlit Cloud can query
+# without the PDFs.
 data/raw/*
 !data/raw/.gitkeep
 data/cleaned/*
 !data/cleaned/.gitkeep
-data/chroma_db/
-data/chunks.jsonl
 
 # Python
 __pycache__/

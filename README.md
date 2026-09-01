@@ -56,6 +56,19 @@ Re-run embedding after any chunking change. The vector store is rebuilt from scr
 streamlit run app.py
 ```
 
+### Streamlit Cloud
+
+`runtime.txt` pins **Python 3.12** (3.14 has no wheels for these packages). In the Cloud app also set Python 3.12 under **Settings**.
+
+1. Push `data/chunks.jsonl` and `data/chroma_db/` (about 80 MB). Do **not** push `data/raw/` PDFs.
+2. App settings → **Secrets**, same as `.streamlit/secrets.toml.example`:
+
+```toml
+GROQ_API_KEY = "gsk_..."
+```
+
+3. Main file: `app.py`. First load downloads the BGE embedding model and can take a few minutes.
+
 Or from the terminal:
 
 ```powershell

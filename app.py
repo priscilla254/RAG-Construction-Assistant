@@ -8,6 +8,7 @@ state as typing, then collapse the expander so the answer is visible.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -18,6 +19,27 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from rag_assistant.config import Config
 from rag_assistant.pipeline import RetrievalPipeline
+
+CHUNKS_PATH = ROOT / "data" / "chunks.jsonl"
+CHROMA_SQLITE = ROOT / "data" / "chroma_db" / "chroma.sqlite3"
+
+
+def _apply_cloud_secrets() -> None:
+    """Copy Streamlit Cloud secrets into the env vars the generator reads."""
+    try:
+        key = st.secrets.get("GROQ_API_KEY", "")
+    except Exception:
+        return
+    if key:
+        os.environ["GROQ_API_KEY"] = str(key).strip()
+
+
+def _index_ready() -> bool:
+    return (
+        CHUNKS_PATH.is_file()
+        and CHUNKS_PATH.stat().st_size > 0
+        and CHROMA_SQLITE.is_file()
+    )
 
 # Labels for eval_set.json `category` values (human-only; not scored).
 GALLERY_LABELS = {
@@ -31,6 +53,23 @@ GALLERY_LABELS = {
 st.set_page_config(page_title="RAG Construction Assistant", layout="wide")
 st.title("RAG Construction Assistant")
 st.caption("Ask questions over UK building regulations and HSE construction guidance.")
+
+_apply_cloud_secrets()
+
+if not _index_ready():
+    st.error(
+        "The retrieval index is not in this clone (`data/chunks.jsonl` and "
+        "`data/chroma_db/`). Commit those two paths (not the original PDFs) "
+        "and reboot the app. See the README deploy section."
+    )
+    st.stop()
+
+if not os.environ.get("GROQ_API_KEY", "").strip():
+    st.error(
+        "GROQ_API_KEY is not set. Locally use a `.env` file. On Streamlit "
+        "Cloud add it under App settings → Secrets."
+    )
+    st.stop()
 
 
 @st.cache_resource
